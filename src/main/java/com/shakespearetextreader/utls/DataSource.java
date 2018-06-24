@@ -1,6 +1,6 @@
 package com.shakespearetextreader.utls;
 
-public interface DataSource {
+public interface DataSource  {
 
     void getFile(String fileName);
 }
