@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -32,7 +33,7 @@ public class DataManipulatorImpl implements DataManipulator {
         try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(fileName))) {
             list = bufferedReader
                     .lines()
-                    .filter( line -> !line.isEmpty())
+                    .filter(line -> !line.isEmpty())
                     .collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();
@@ -45,7 +46,7 @@ public class DataManipulatorImpl implements DataManipulator {
     public long getNumberOfLinesForFileWithNonEmptyLines(String fileName) {
         try (Stream<String> bufferedReader = Files.lines(Paths.get(fileName))) {
             long lineCount = bufferedReader
-                    .filter( line -> !line.isEmpty())
+                    .filter(line -> !line.isEmpty())
                     .count();
             return lineCount;
         } catch (IOException e) {
@@ -55,13 +56,20 @@ public class DataManipulatorImpl implements DataManipulator {
     }
 
     @Override
-    public int getTotalNumberOfWords(String fileName) {
+    public long getTotalNumberOfWords(String fileName) {
+        try (Stream<String> bufferedReader = Files.lines(Paths.get(fileName))) {
+            long wordCount = bufferedReader
+                    .flatMap(word -> Arrays.stream(word.trim().split(" ")))
+                    .count();
+            return wordCount;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return 0;
     }
 
     @Override
-    public String getOnlyUniqueWords(String fileName) {
-        return null;
+    public void getOnlyUniqueWords(String fileName) {
     }
 
     @Override
@@ -84,13 +92,25 @@ public class DataManipulatorImpl implements DataManipulator {
     }
 
     @Override
-    public void getFile(String fileName) {
-        List<String> list = new ArrayList<>();
-        try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(fileName))) {
-            list = bufferedReader.lines().collect(Collectors.toList());
+    public void getFileWithoutWordsStartingWithCapitalLetters(String fileName) {
+
+    }
+
+    @Override
+    public void displayTextWithCharactersCount(String fileName) {
+
+    }
+
+    @Override
+    public void displayTextWithReplacedText(String filename) {
+
+        try (Stream<String> bufferedReader = Files.lines(Paths.get(filename))) {
+            listOfLines = bufferedReader
+                    .map(line -> line.replaceAll("Król", "Cesarz"))
+                    .collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        list.forEach(System.out::println);
+        listOfLines.forEach(System.out::println);
     }
 }
